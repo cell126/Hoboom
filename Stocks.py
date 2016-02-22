@@ -19,7 +19,7 @@ class StockList:
         if html != None :
             stocksText = re.findall("data:\[(.*?)\]", html.text)[0]
             stocksList = re.findall(r'"[0-9],(.*?)"', stocksText)
-            n = 0
+            fileStock = open("d:\\stock.csv", "w")
             for item in stocksList :
                 stock = re.split(',', item)
                 stockCode = stock[0]
@@ -27,6 +27,8 @@ class StockList:
                     continue
                 stockName = stock[1]
                 stocks[stockCode] = stockName
+                fileStock.write("%s,%s\n"%(stockCode, stockName))
+            fileStock.close()
             return sorted(stocks.items())
 
     @staticmethod

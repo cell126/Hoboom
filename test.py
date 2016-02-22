@@ -1,5 +1,6 @@
-import re
+# coding=utf-8
 
-text = "000160"
-data = re.match(r'2\d{5}', text)
-print(data)
+floatingStock = (u"流通股", "d://TopFloatingStockHolder.csv")
+stock = ("非流通股", "d://TopStockholder.csv")
+
+print(floatingStock[0], floatingStock[1])
