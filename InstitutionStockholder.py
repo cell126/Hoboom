@@ -47,7 +47,7 @@ class DFCFInsitutionStockholder:
                 if(trSelector != None and len(trSelector) > 0):
                     st = trSelector[0].xpath('string()')
                     if(st != None):
-                        st = st.replace('\n','').replace('\t','').replace(',',';').replace('\r','').strip()
+                        st = st.replace('\n','').replace('\t','').replace(',','').replace('\r','').strip()
                         if(len(st)>20):
                             continue
                         fileStock.write(",%s"%st)
