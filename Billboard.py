@@ -23,16 +23,16 @@ class THSBillboard:
 
     def Spider(self, code, fileName):
         html = requests.get(self.Url%code)
-        bDate = time.strptime('2016-01-01','%Y-%m-%d')
+        bDate = time.strptime('2015-01-01','%Y-%m-%d')
         if (html != None):
             dates = self.GetDates(html)
             if(dates != None):
                 for date in dates:
                     dDate = time.strptime(date,'%Y-%m-%d')
-                    '''
+
                     if(dDate < bDate):
                         continue
-                    '''
+
                     url = self.Url%code + "/date/%s/ajax/1"%date
                     html = requests.get(url)
                     if(html != None):
@@ -111,8 +111,8 @@ class THSBillboard:
 
 
 if __name__ == '__main__':
-    codes = Stocks.StockList.GetStockCodes()
-    #codes = ['000058']
+    #codes = Stocks.StockList.GetStockCodes()
+    codes = ['000058']
 
     fileName = u"d://股价异动_同花顺.csv"
 
