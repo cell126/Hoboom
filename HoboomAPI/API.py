@@ -7,23 +7,22 @@ import sys
 from flask import Flask
 from flask.ext import restful
 
-from HoboomAPI.Resources.Info.Info import Info
-from HoboomAPI.Resources.View.View import View
+from Resources.Info import AnalyseReport
+from Resources.Info import Announcement
+from Resources.Info import GreatEvents
+from Resources.Info import Info
+from Resources.Info import InvestorRa
+from Resources.Info import MarketNews
+from Resources.Info import MarketView
+from Resources.Info import News
+from Resources.Info import SpecialNotice
+from Resources.Info import StockRecommend
+from Resources.View import Investigate
+from Resources.View import Portfolio
+from Resources.View import Report
+from Resources.View import View
+from Resources.View import Viewpoint
 from Resources.GeneralInfo import GeneralInfo
-
-from HoboomAPI.Resources.Info.Info import StockRecommend
-from HoboomAPI.Resources.Info.Info import Announcement
-from HoboomAPI.Resources.Info.Info import News
-from HoboomAPI.Resources.Info.Info import GreatEvents
-from HoboomAPI.Resources.Info.Info import AnalyseReport
-from HoboomAPI.Resources.Info.Info import SpecialNotice
-from HoboomAPI.Resources.Info.Info import MarketNews
-from HoboomAPI.Resources.Info.Info import MarketView
-from HoboomAPI.Resources.Info.Info import InvestorRa
-from HoboomAPI.Resources.View.View import Report
-from HoboomAPI.Resources.View.View import Portfolio
-from HoboomAPI.Resources.View.View import Viewpoint
-from HoboomAPI.Resources.View.View import Investigate
 
 reload(sys)
 sys.setdefaultencoding('utf-8')

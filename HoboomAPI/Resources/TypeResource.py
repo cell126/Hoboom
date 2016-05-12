@@ -1,12 +1,8 @@
 # coding=utf-8
 
 import sys
-import re
-
 import requests
-import copy
 
-from HoboomAPI.Resources.BaseResource import BaseResource
 from flask.ext.restful import abort
 from flask import Flask
 from flask.ext import restful

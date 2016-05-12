@@ -2,8 +2,8 @@
 
 import sys
 
-from HoboomAPI.Resources.BaseResource import BaseResource
-from HoboomAPI.Resources.TypeResource import TypeResource
+from BaseResource import BaseResource
+from TypeResource import TypeResource
 
 reload(sys)
 sys.setdefaultencoding('utf-8')

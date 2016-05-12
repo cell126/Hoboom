@@ -79,7 +79,6 @@ class BaseResource(restful.Resource):
                 esQuery["_source"] = self.shortSource
 
             data = json.dumps(esQuery)
-            print data
 
             result = self.__processRequest(data)
             return result

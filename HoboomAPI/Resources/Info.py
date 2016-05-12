@@ -2,14 +2,14 @@
 
 import sys
 
-import HoboomAPI.Resources.BaseResource
-from HoboomAPI.Resources.TypeResource import TypeResource
+from BaseResource import BaseResource
+from TypeResource import TypeResource
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
-class Info(HoboomAPI.Resources.BaseResource.BaseResource):
+class Info(BaseResource):
     def __init__(self):
         self.shortSource = ["Media", "Writer", "Author", "InfoTitle", "Time"]
         self.url = 'http://139.196.200.24:9200/hoboominfo/_search'
