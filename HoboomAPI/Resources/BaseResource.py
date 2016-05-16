@@ -20,8 +20,9 @@ sys.setdefaultencoding('utf-8')
 parser = reqparse.RequestParser()
 parser.add_argument('from', type=int, help='from 参数必须是整数', location=['args', 'json'])
 parser.add_argument('size', type=int, help='size 参数必须是整数', location=['args', 'json'])
-parser.add_argument('secuCodes', type=str, action='append', location=['json'])
 parser.add_argument('abstract', type=bool, help='abstract 参数必须是布尔值', location=['args', 'json'])
+parser.add_argument('secuCodes', type=str, action='append', location=['json'])
+parser.add_argument('query', type=str, help='query 参数必须是字符串', location=['json'])
 
 general_fields = view_fields = {
     'type'      :   fields.String(attribute='_type'),
@@ -53,19 +54,28 @@ class BaseResource(restful.Resource):
                 ]
             }
     codeQuery = {
-                    "filtered": {
-                        "filter": {
-                            "terms": {
-                                "SecuCode": ""
-                            }
+                    #"filter": {
+                        "terms": {
+                            "SecuCode": ""
                         }
-                    }
+                    #}
                 }
+    keywordQuery = {
+                        #"must": {
+                            "multi_match": {
+                                "query":    "",
+                                "operator" : "and",
+                                "fields":   ["InfoTitle", "Content", "Media", "Writer", "Author"]
+                            }
+                        #}
+                    }
+
+
     shortSource = ["Media", "Writer", "Author", "InfoTitle", "Time"]
 
     url = 'http://139.196.200.24:9200/hoboominfo,hoboomview/_search'
 
-    @marshal_with(general_fields, envelope='results')
+    @marshal_with(general_fields, envelope='result')
     def get(self):
         try:
             esQuery = copy.deepcopy(self.query)
@@ -86,7 +96,7 @@ class BaseResource(restful.Resource):
             return abort(400)
 
 
-    @marshal_with(general_fields, envelope='results')
+    @marshal_with(general_fields, envelope='result')
     def post(self):
         try:
             esQuery = copy.deepcopy(self.query)
@@ -96,14 +106,29 @@ class BaseResource(restful.Resource):
             srcfrom, srcSize = self.__processFromSize(args["from"], args["size"])
             esQuery["from"], esQuery["size"] = srcfrom, srcSize
 
+            query = {}
+            query.setdefault("bool", [])
+
             if(args["secuCodes"] != None):
-                esQuery["query"] = self.codeQuery
-                esQuery["query"]["filtered"]["filter"]["terms"]["SecuCode"] = args["secuCodes"]
+                codeQuery = copy.deepcopy(self.codeQuery)
+                esQuery["query"] = { "bool": { "filter": ""}}
+                esQuery["query"]["bool"]["filter"] = codeQuery
+                esQuery["query"]["bool"]["filter"]["terms"]["SecuCode"] = args["secuCodes"]
+
+
+            if(args["query"] != None):
+                keywordQuery = copy.deepcopy(self.keywordQuery)
+                if(esQuery["query"]["bool"] == None):
+                    esQuery["query"] = { "bool": { "must": ""}}
+                esQuery["query"]["bool"]["must"] = keywordQuery
+                esQuery["query"]["bool"]["must"]["multi_match"]["query"] = args["query"]
+
 
             if(args["abstract"] != None):
                 esQuery["_source"] = self.shortSource
 
             data = json.dumps(esQuery)
+            print data
 
             result = self.__processRequest(data)
             return result

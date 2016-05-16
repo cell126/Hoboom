@@ -38,7 +38,7 @@ class TypeResource(restful.Resource):
     shortSource = ["Media", "Writer", "Author", "InfoTitle", "Time", "Scope", "Count", "State"]
     url = 'http://139.196.200.24:9200/hoboom%s/%s/'
 
-    @marshal_with(general_fields, envelope='results')
+    @marshal_with(general_fields, envelope='result')
     def get(self, id):
         url = self.url + id
         return self.__processRequest(url)
@@ -51,3 +51,24 @@ class TypeResource(restful.Resource):
             return result
         else:
             return abort(400)
+
+class TypeWithDelete(TypeResource):
+    shortSource = ["Media", "Writer", "Author", "InfoTitle", "Time", "Scope", "Count", "State"]
+    url = 'http://139.196.200.24:9200/hoboom%s/%s/'
+
+    def delete(self, id):
+        url = self.url + id
+        return self.__processDelete(url)
+
+    def __processDelete(self, url):
+        html = requests.delete(url)
+
+        if(html != None and html.content != None):
+            result = json.loads(html.content)
+            if(result != None and result[u"found"] == True):
+                return jsonify({'result': {"found": True}})
+            else:
+                 return jsonify({'result': {"found": False}})
+        else:
+            return abort(400)
+
