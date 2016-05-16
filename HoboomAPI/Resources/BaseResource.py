@@ -22,7 +22,8 @@ parser.add_argument('from', type=int, help='from 参数必须是整数', locatio
 parser.add_argument('size', type=int, help='size 参数必须是整数', location=['args', 'json'])
 parser.add_argument('abstract', type=bool, help='abstract 参数必须是布尔值', location=['args', 'json'])
 parser.add_argument('secuCodes', type=str, action='append', location=['json'])
-parser.add_argument('query', type=str, help='query 参数必须是字符串', location=['json'])
+parser.add_argument('query', type=dict, location=['json'])
+
 
 general_fields = view_fields = {
     'type'      :   fields.String(attribute='_type'),
@@ -85,7 +86,7 @@ class BaseResource(restful.Resource):
             srcfrom, srcSize = self.__processFromSize(args["from"], args["size"])
             esQuery["from"], esQuery["size"] = srcfrom, srcSize
 
-            if(args["abstract"] != None):
+            if(args["abstract"]):
                 esQuery["_source"] = self.shortSource
 
             data = json.dumps(esQuery)
@@ -118,14 +119,19 @@ class BaseResource(restful.Resource):
 
             if(args["query"] != None):
                 keywordQuery = copy.deepcopy(self.keywordQuery)
-                if(esQuery["query"]["bool"] == None):
+                if(not esQuery.has_key("query")):
                     esQuery["query"] = { "bool": { "must": ""}}
                 esQuery["query"]["bool"]["must"] = keywordQuery
-                esQuery["query"]["bool"]["must"]["multi_match"]["query"] = args["query"]
+                if(args["query"].has_key("keyword")):
+                    esQuery["query"]["bool"]["must"]["multi_match"]["query"] = args["query"]["keyword"]
+                    if(args["query"].has_key("fields") and set(args["query"]["fields"]).issubset(keywordQuery["multi_match"]["fields"])):
+                        print set(args["query"]["fields"]).issubset(keywordQuery["multi_match"]["fields"])
+                        esQuery["query"]["bool"]["must"]["multi_match"]["fields"] = args["query"]["fields"]
 
 
-            if(args["abstract"] != None):
+            if(args["abstract"]):
                 esQuery["_source"] = self.shortSource
+
 
             data = json.dumps(esQuery)
             print data
@@ -147,7 +153,7 @@ class BaseResource(restful.Resource):
 
 
     def __processRequest(self, data):
-        html = requests.post(self.url, data=data)
+        html = requests.post(self.url, data=data, timeout=20)
 
         if(html != None and html.content != None):
             result = json.loads(html.content)

@@ -16,9 +16,6 @@ from flask.ext.restful import fields, marshal_with
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-parser = reqparse.RequestParser()
-parser.add_argument('abstract', type=bool, help='abstract 参数必须是布尔值', location=['args', 'json'])
-
 general_fields = view_fields = {
     'type'      :   fields.String(attribute='_type'),
     'id'        :   fields.String(attribute='_id'),
